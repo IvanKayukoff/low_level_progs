@@ -114,18 +114,33 @@ read_char:
 	dec rsp
 	mov rsi, rsp
 	syscall
-	xor rax, rax
+	test rax, rax
+	jz .ret_zero
 	mov al, [rsp]
 	inc rsp
-    ret 
+    ret
+	.ret_zero:
+	xor rax, rax
+	inc rsp
+	ret
 
 read_word:
+	push r12
 	mov r8, rdi					; buffer address to r8
 	mov r9, rsi					; buffer size to r9
-	xor rcx, rcx				; nulling counter
+	xor r12, r12
+	.loop_space:
+	call read_char
+	cmp al, 0x9
+	je .loop_space
+	cmp al, 0x10
+	je .loop_space
+	cmp al, 0x20
+	je .loop_space
+	jmp .loop_write
 	.loop:
 		call read_char
-		cmp rcx, r9				; if counter >= buffer size
+		cmp r12, r9				; if counter >= buffer size
 		jge .overflow			; then go to .overflow
 		cmp al, 0x9
 		je .return				; if character == ' ' or '\t' or '\n'
@@ -133,35 +148,63 @@ read_word:
 		je .return
 		cmp al, 0x20
 		je .return
-		mov byte [r8+rcx], al	; if character == 0 then go to .return
+		.loop_write:
 		test al, al
 		jz .return				; otherwise write the character to the buffer
-		inc rcx					; and do one more iteration
+		mov byte [r8+r12], al	; if character == 0 then go to .return
+		inc r12					; and do one more iteration
 		jmp .loop
 	.overflow:
 	xor rax, rax				; return 0
+	pop r12
     ret
 	.return:
-	test rcx, rcx
-	jz .loop
-	mov rdx, rcx				; word length to rdx
+	mov rdx, r12				; word length to rdx
 	mov rax, r8					; buffer address to rax
-	inc rcx
-	mov byte [rax+rcx], 0		; null-terminator at the end of word
+	mov byte [rax+r12], 0		; null-terminator at the end of word
+	pop r12
 	ret
 
 ; rdi points to a string
 ; returns rax: number, rdx : length
 parse_uint:
     xor rax, rax
+	xor rsi, rsi
+    mov r8, 10
+    xor rcx, rcx
+    xor rdx, rdx
+	.loop:
+    	mov sil, [rdi+rcx]
+	    cmp sil, 0x30
+    	jl .return
+    	cmp sil, 0x39
+    	jg .return
+    	inc rcx
+    	sub sil, 0x30
+    	mul r8
+    	add rax, rsi
+    	jmp .loop
+	.return:
+    mov rdx, rcx
     ret
 
 ; rdi points to a string
 ; returns rax: number, rdx : length
 parse_int:
     xor rax, rax
-    ret 
-
+    cmp byte [rdi], 0x2d
+    je .negative
+    call parse_uint
+    ret
+	.negative:
+    inc rdi
+    call parse_uint
+    cmp rdx, 0
+    je .return
+    neg rax
+    inc rdx
+	.return:
+    ret
 
 string_copy:
 	xor rcx, rcx				; nulling counter
@@ -180,5 +223,4 @@ string_copy:
 	.return:					; returns zero
 	xor rax, rax				; if buffer has been overflowed
 	ret
-
 
