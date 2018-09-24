@@ -170,17 +170,17 @@ read_word:
 parse_uint:
     xor rax, rax
 	xor rsi, rsi
-    mov r8, 10
+    mov r8, 10				; radix
     xor rcx, rcx
     xor rdx, rdx
 	.loop:
     	mov sil, [rdi+rcx]
-	    cmp sil, 0x30
+	    cmp sil, 0x30		; check that character is alpha
     	jl .return
     	cmp sil, 0x39
     	jg .return
     	inc rcx
-    	sub sil, 0x30
+    	sub sil, 0x30		; convert to number
     	mul r8
     	add rax, rsi
     	jmp .loop
@@ -191,8 +191,8 @@ parse_uint:
 ; rdi points to a string
 ; returns rax: number, rdx : length
 parse_int:
-    xor rax, rax
-    cmp byte [rdi], 0x2d
+    xor rax, rax			
+    cmp byte [rdi], 0x2d	; if minus leading then go to .negative
     je .negative
     call parse_uint
     ret
@@ -202,7 +202,7 @@ parse_int:
     cmp rdx, 0
     je .return
     neg rax
-    inc rdx
+    inc rdx					; cause minus is not included
 	.return:
     ret
 
