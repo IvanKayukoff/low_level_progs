@@ -4,5 +4,7 @@
 !README.md
 !lab1/lib.inc
 !lab2/
-!lab2/lib.inc
+!lab2/colon.inc
+!lab2/dict.asm
+!lab2/lib.asm
 
