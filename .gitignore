@@ -3,3 +3,6 @@
 !.gitignore
 !README.md
 !lab1/lib.inc
+!lab2/
+!lab2/lib.inc
+
