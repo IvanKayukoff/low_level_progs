@@ -1,21 +1,17 @@
-%define last 0
+%ifndef _COLON_
+%define _COLON_
+
+%define first 0
 
 %macro colon 2
-%%elem_prev: dq last
+%%elem_prev: dq first
 db %1, 0
 
 %2:
-%define last %%elem_prev
+%define first %%elem_prev
 %endmacro
 
-colon "third word", third_word
-db "third word explanation", 0
-
-colon "second word", second_word
-db "second word explanation", 0
-
-colon "first word", first_word
-db "first word explanation", 0
+%endif
 
 ; vim: syntax=nasm
 

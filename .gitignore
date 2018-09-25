@@ -3,8 +3,12 @@
 !.gitignore
 !README.md
 !lab1/lib.inc
+
 !lab2/
 !lab2/colon.inc
 !lab2/dict.asm
 !lab2/lib.asm
+!lab2/main.asm
+!lab2/words.inc
+!lab2/compile
 

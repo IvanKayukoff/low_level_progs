@@ -16,6 +16,7 @@ global string_copy
 global read_char
 global read_word
 global string_equals
+global print_err
 
 string_length:
     xor rax, rax				; here will be result
@@ -35,6 +36,16 @@ print_string:
 	mov rdi, 1					; stdout
 	syscall
 	xor rax, rax
+    ret
+
+print_err:
+    call string_length
+    mov rsi, rdi
+    mov rdx, rax
+    mov rax, 1
+    mov rdi, 2                  ; stderr
+    syscall
+    xor rax, rax
     ret
 
 
