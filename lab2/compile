@@ -1,5 +1,5 @@
 nasm -f elf64 lib.asm
 nasm -f elf64 dict.asm
-nasm -f elf64 main.asm
+nasm -f elf64 main1.asm
 
-ld -o lab2 main.o dict.o lib.o
+ld -o lab2 main1.o dict.o lib.o
