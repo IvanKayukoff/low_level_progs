@@ -1,17 +1,15 @@
 *
-!lab1/
 !.gitignore
-!README.md
-!lab1/lib.inc
+!*.md
+!*.sh
+!*.c
+!*.tex
 
-!lab2/
-!lab2/colon.inc
-!lab2/dict.asm
-!lab2/lib.asm
-!lab2/main.asm
-!lab2/words.inc
-!lab2/compile
-
+!lab3/
 !lab3/main.c
 !lab3/build.sh
-
+!lab3/docs/
+!lab3/docs/titlepage.tex
+!lab3/docs/report.tex
+!lab3/docs/out/
+!lab3/docs/out/report.pdf
