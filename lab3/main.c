@@ -25,8 +25,12 @@ int main() {
 
   printf("Enter the number to check for primality: ");
   unsigned long num = 0;
-  scanf("%lu", &num);
-  printf("Primality test result: %d\n", is_prime(num));
+
+  if (scanf("%lu", &num)) {
+    printf("Primality test result: %d\n", is_prime(num));
+  } else {
+    printf("You should write an integer!\n");
+  }
 
   return 0;
 }
