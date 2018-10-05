@@ -13,7 +13,7 @@ int scalar(const int a[], const int b[], size_t size) {
 }
 
 int is_prime(unsigned long n) {
-  if (1 == n) return 1;
+  if (1 == n || 0 == n) return 0;
   for (int k = 2; k*k <= n; k++) {
     if (n % k == 0) return 0;
   }
