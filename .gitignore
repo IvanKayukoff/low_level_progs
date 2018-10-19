@@ -13,3 +13,9 @@
 !lab3/docs/report.tex
 !lab3/docs/out/
 !lab3/docs/out/report.pdf
+
+!lab4/
+!lab4/linked_list.c
+!lab4/linked_list.h
+!lab4/CMakeLists.txt
+
