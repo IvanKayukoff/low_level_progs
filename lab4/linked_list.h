@@ -63,4 +63,10 @@ Node *list_node_at(Node *lst, size_t index);
  **/
 int list_sum(Node const *lst);
 
+void push_back(Node *lst, int data);
+
+Node *push_front(Node *const lst, int data);
+
+void list_print(Node const *lst);
+
 #endif //LAB4_LINKED_LIST_H

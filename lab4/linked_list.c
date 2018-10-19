@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include "linked_list.h"
@@ -81,4 +82,29 @@ int list_sum(Node const *lst) {
         lst = lst->next;
     }
     return sum;
+}
+
+void push_back(Node *lst, int data) {
+    assert(lst != NULL);
+
+    Node *item = list_create(data);
+    list_add_back(lst, item);
+}
+
+Node *push_front(Node *const lst, int data) {
+    assert(lst != NULL);
+
+    Node *item = list_create(data);
+    Node *head = list_add_front(lst, item);
+    return head;
+}
+
+void list_print(Node const *lst) {
+    assert(lst != NULL);
+
+    while (lst != NULL) {
+        printf("%d ", lst->data);
+        lst = lst->next;
+    }
+    printf("\n");
 }
