@@ -3,7 +3,10 @@
 #ifndef LAB4_LINKED_LIST_H
 #define LAB4_LINKED_LIST_H
 
-typedef struct Node Node;
+typedef struct Node {
+    int data;
+    struct Node *next;
+} Node;
 
 /**
  *  Creates Node instance, calls assertion when memory allocation error happens

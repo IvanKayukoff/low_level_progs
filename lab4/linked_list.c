@@ -3,11 +3,6 @@
 #include <assert.h>
 #include "linked_list.h"
 
-struct Node {
-    int data;
-    struct Node *next;
-};
-
 Node *list_create(int data) {
     Node *head = (Node *) calloc(1, sizeof(Node));
 

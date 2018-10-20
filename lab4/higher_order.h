@@ -5,4 +5,8 @@
 
 void foreach(Node const *lst, void (*action)(int));
 
+Node *map(Node const *lst, int (*action)(int));
+
+Node *map_mut(Node *lst, int (*action)(int));
+
 #endif //LAB4_HIGHER_ORDER_H

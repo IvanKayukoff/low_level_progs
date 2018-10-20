@@ -75,6 +75,8 @@ void high_order_test() {
     printf("\n\n===Print with newline character test===\n");
     void (*pNewline_function)(int) = &print_int_with_newline;
     foreach(list, pNewline_function);
+
+    list_free(list);
 }
 
 void list_test() {
