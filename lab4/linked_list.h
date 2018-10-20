@@ -66,10 +66,15 @@ Node *list_node_at(Node *lst, size_t index);
  **/
 int list_sum(Node const *lst);
 
+/** Pushes the [data] to the end of the [lst] which must be not null */
 void push_back(Node *lst, int data);
 
+/** Pushes the [data] to the front of the [lst] which must be not null
+ *  @return pointer to the new head of the list
+ **/
 Node *push_front(Node *const lst, int data);
 
-void list_print(Node const *lst);
+/** Prints each element of the [lst] with specific delimiter */
+void list_print(Node const *lst, char const *const delim);
 
 #endif //LAB4_LINKED_LIST_H

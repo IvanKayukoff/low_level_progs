@@ -94,11 +94,12 @@ Node *push_front(Node *const lst, int data) {
     return head;
 }
 
-void list_print(Node const *lst) {
+void list_print(Node const *lst, char const *const delim) {
     assert(lst != NULL);
+    assert(delim != NULL);
 
     while (lst != NULL) {
-        printf("%d ", lst->data);
+        printf("%d%s", lst->data, delim);
         lst = lst->next;
     }
     printf("\n");

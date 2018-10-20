@@ -39,3 +39,27 @@ Node *map_mut(Node *lst, int (*action)(int)) {
     }
     return lst;
 }
+
+int foldl(Node const *lst, int (*action)(int, int), int a) {
+    assert(lst != NULL);
+    assert(action != NULL);
+
+    size_t length = list_length(lst);
+    for (size_t i = 0; i < length; ++i) {
+        a = (*action)(lst->data, a);
+        lst = lst->next;
+    }
+    return a;
+}
+
+void iterate(Node *lst, int (*action)(int), size_t length) {
+    assert(lst != NULL);
+    assert(action != NULL);
+    /** To avoid memory leaks */
+    assert(list_length(lst) == 1);
+
+    for (size_t i = 0; i < length - 1; ++i) {
+        lst->next = list_create((*action)(lst->data));
+        lst = lst->next;
+    }
+}
