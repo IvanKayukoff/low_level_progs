@@ -3,4 +3,4 @@ project(lab4 C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(lab4 linked_list.c linked_list.h main.c)
+add_executable(lab4 linked_list.c linked_list.h main.c higher_order.c higher_order.h)
