@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <stdbool.h>
+#include <limits.h>
 #include "linked_list.h"
 #include "higher_order.h"
 
@@ -65,25 +67,78 @@ void print_int_with_newline(int x) {
     printf("%d\n", x);
 }
 
+int sqr(int x) {
+    return x * x;
+}
+
+int cube(int x) {
+    return x * x * x;
+}
+
+int min(int left, int right) {
+    if (left < right) return left;
+    else return right;
+}
+
+int max(int left, int right) {
+    if (left > right) return left;
+    else return right;
+}
+
+int sum(int left, int right) {
+    return left + right;
+}
+
+int double_it(int x) {
+    return 2 * x;
+}
+
 void high_order_test() {
     Node *list = cli_fill_list();
 
-    printf("\n===Print with space character test===\n");
-    void (*pSpace_function)(int) = &print_int_with_space;
-    foreach(list, pSpace_function);
+    printf("\n=== Print list with space character ===\n");
+    foreach(list, &print_int_with_space);
 
-    printf("\n\n===Print with newline character test===\n");
-    void (*pNewline_function)(int) = &print_int_with_newline;
-    foreach(list, pNewline_function);
+    printf("\n\n=== Print list with newline character ===\n");
+    foreach(list, &print_int_with_newline);
 
+    Node *sqr_list = map(list, &sqr);
+    printf("\n=== Print squares of the list ===\n");
+    list_print(sqr_list, " ");
+
+    Node *cube_list = map(list, &cube);
+    printf("\n=== Print cubes of the list ===\n");
+    list_print(cube_list, " ");
+
+    printf("\n=== Print the minimal value of the list ===\n");
+    printf("%d\n", foldl(list, &min, INT_MAX));
+
+    printf("\n=== Print the maximum value of the list ===\n");
+    printf("%d\n", foldl(list, &max, INT_MIN));
+
+    printf("\n=== Print the sum of all elements value of the list ===\n");
+    printf("%d\n", foldl(list, &sum, 0));
+
+    printf("\n=== Print the module of each value of the list ===\n");
+    map_mut(list, &abs);
+    list_print(list, " ");
+
+    Node *seq_list = list_create(1);
+    iterate(seq_list, &double_it, 10);
+    printf("\n=== Print first 10 values of the sequence degrees of 2 ===\n");
+    list_print(seq_list, " ");
+
+    list_free(seq_list);
     list_free(list);
+    list_free(sqr_list);
+    list_free(cube_list);
 }
 
 void list_test() {
     Node *list = cli_fill_list();
 
     printf("List items:\n\t");
-    list_print(list);
+    list_print(list, " ");
     printf("Length of the list: %lu\n", list_length(list));
     printf("Sum of elements: %d\n", list_sum(list));
 

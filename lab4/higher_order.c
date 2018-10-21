@@ -22,6 +22,7 @@ Node *map(Node const *lst, int (*action)(int)) {
     for (size_t i = 0; i < length; ++i) {
         if (head == NULL) {
             head = list_create((*action)(list_get(lst, i)));
+            continue;
         }
         push_back(head, (*action)(list_get(lst, i)));
     }

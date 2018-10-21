@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stdbool.h>
 #include "linked_list.h"
 
 Node *list_create(int data) {
@@ -103,4 +104,8 @@ void list_print(Node const *lst, char const *const delim) {
         lst = lst->next;
     }
     printf("\n");
+}
+
+bool save(Node *lst, char const *filename) {
+    
 }
