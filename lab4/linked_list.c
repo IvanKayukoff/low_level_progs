@@ -106,6 +106,72 @@ void list_print(Node const *lst, char const *const delim) {
     printf("\n");
 }
 
-bool save(Node *lst, char const *filename) {
-    
+bool compare_lists(Node const *left, Node const *right) {
+    assert(left != NULL);
+    assert(right != NULL);
+
+    size_t left_size = list_length(left);
+    if (left_size != list_length(right)) return false;
+
+    for (size_t i = 0; i < left_size; ++i) {
+        if (left->data != right->data) return false;
+        left = left->next;
+        right = right->next;
+    }
+    return true;
+}
+
+bool save(Node const *lst, char const *filename) {
+    assert(lst != NULL);
+    assert(filename != NULL);
+
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Error while opening the file \"%s\"", filename);
+        return false;
+    }
+
+    size_t lst_size = list_length(lst);
+    for (size_t i = 0; i < lst_size; ++i) {
+        fprintf(file, "%d ", lst->data);
+        lst = lst->next;
+    }
+    fclose(file);
+    return true;
+}
+
+bool load(Node *lst, char const *filename) {
+    assert(lst != NULL);
+    assert(filename != NULL);
+    /** To avoid memory leaks */
+    assert(list_length(lst) == 1);
+
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Error while opening the file \"%s\"", filename);
+        return false;
+    }
+
+    int read = 0;
+    int elem = 0xDEADF00D;
+    Node *prelast = NULL; // FIXME
+    while ((read = fscanf(file, "%d", &elem)) != EOF) {
+        if (read <= 0) {
+            fclose(file);
+            return false;
+        }
+
+        lst->data = elem;
+        lst->next = (Node *) calloc(1, sizeof(Node));
+        prelast = lst;
+        lst = lst->next;
+    }
+
+    if (prelast != NULL) { // FIXME you can ask me what the ..
+        free(prelast->next);
+        prelast->next = NULL;
+    }
+
+    fclose(file);
+    return true;
 }

@@ -128,6 +128,26 @@ void high_order_test() {
     printf("\n=== Print first 10 values of the sequence degrees of 2 ===\n");
     list_print(seq_list, " ");
 
+    printf("\n=== Saving the seq_list to the file ===\n");
+    if (save(seq_list, "linked_list")) {
+        printf("\t Saving is successful \n");
+        printf("\n=== Loading the seq_list from the file ===\n");
+        Node *read_list = list_create(0xDEADF00D);
+
+        if (load(read_list, "linked_list")) {
+            printf("\t Loading is successful \n");
+            printf("\t Comparing source and received list.. \n");
+            if (compare_lists(seq_list, read_list)) {
+                printf("\t\t Lists are equals\n");
+            } else {
+                printf("\t\t Lists are different, test failed :(\n");
+            }
+        }
+
+        list_free(read_list);
+    }
+
+
     list_free(seq_list);
     list_free(list);
     list_free(sqr_list);

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdbool.h>
 
 #ifndef LAB4_LINKED_LIST_H
 #define LAB4_LINKED_LIST_H
@@ -66,15 +67,40 @@ Node *list_node_at(Node *lst, size_t index);
  **/
 int list_sum(Node const *lst);
 
-/** Pushes the [data] to the end of the [lst] which must be not null */
+/** Pushes the [data] to the end of the [lst] which must be not NULL */
 void push_back(Node *lst, int data);
 
-/** Pushes the [data] to the front of the [lst] which must be not null
+/**
+ *  Pushes the [data] to the front of the [lst] which must be not NULL
  *  @return pointer to the new head of the list
  **/
 Node *push_front(Node *const lst, int data);
 
-/** Prints each element of the [lst] with specific delimiter */
+/**
+ *  Prints each element of the [lst] with specific delimiter
+ *  Requirements: [lst] and [delim] must be not NULL
+ **/
 void list_print(Node const *lst, char const *const delim);
+
+/**
+ * Compares 2 lists
+ * Requirements: [left] and [right] must be not NULL
+ * @return true if lists are equals, otherwise - false
+ **/
+bool compare_lists(Node const *left, Node const *right);
+
+/**
+ *  Writes all elements of the [lst] into a text file [filename]
+ *  Requirements: [lst] and [filename] must be not NULL
+ *  @return true if saving is successful, otherwise - false
+ **/
+bool save(Node const *lst, char const *filename);
+
+/**
+ *  Reads elements from the [filename] and adds them to the [lst]
+ *  Requirements: [lst] and [filename] must be not NULL, also the [lst] must have only 1 node
+ *  @return true if loading is successful, otherwise - false
+ **/
+bool load(Node *lst, char const *filename);
 
 #endif //LAB4_LINKED_LIST_H
