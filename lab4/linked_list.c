@@ -140,11 +140,11 @@ bool save(Node const *lst, char const *filename) {
     return true;
 }
 
-bool load(Node *lst, char const *filename) {
+bool load(Node **lst, char const *filename) {
     assert(lst != NULL);
     assert(filename != NULL);
     /** To avoid memory leaks */
-    assert(list_length(lst) == 1);
+    assert(*lst == NULL);
 
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
@@ -154,22 +154,76 @@ bool load(Node *lst, char const *filename) {
 
     int read = 0;
     int elem = 0xDEADF00D;
-    Node *prelast = NULL; // FIXME
-    while ((read = fscanf(file, "%d", &elem)) != EOF) {
+
+    for (int i = 0; (read = fscanf(file, "%d", &elem)) != EOF; ++i) {
         if (read <= 0) {
             fclose(file);
             return false;
         }
-
-        lst->data = elem;
-        lst->next = (Node *) calloc(1, sizeof(Node));
-        prelast = lst;
-        lst = lst->next;
+        if (0 == i) {
+            *lst = list_create(elem);
+            continue;
+        }
+        push_back(*lst, elem);
     }
 
-    if (prelast != NULL) { // FIXME you can ask me what the ..
-        free(prelast->next);
-        prelast->next = NULL;
+    fclose(file);
+    return true;
+}
+
+bool serialize(Node const *lst, char const *filename) {
+    assert(lst != NULL);
+    assert(filename != NULL);
+
+    FILE *file = fopen(filename, "wb");
+    if (file == NULL) {
+        printf("Error while opening the file \"%s\"", filename);
+        return false;
+    }
+
+    size_t lst_size = list_length(lst);
+    int *buffer = (int *) calloc(lst_size, sizeof(int));
+
+    for (size_t i = 0; i < lst_size; ++i) {
+        buffer[i] = lst->data;
+        lst = lst->next;
+    }
+    fwrite(buffer, lst_size, sizeof(int), file);
+
+    fclose(file);
+    return true;
+}
+
+bool deserialize(Node **lst, char const *filename) {
+    assert(lst != NULL);
+    assert(filename != NULL);
+    /** To avoid memory leaks */
+    assert(*lst == NULL);
+
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        printf("Error while opening the file \"%s\"", filename);
+        return false;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long buffer_len = ftell(file);
+    rewind(file);
+
+    if (buffer_len < 0) {
+        fclose(file);
+        return false;
+    }
+
+    int *buffer = (int *) calloc(1, (size_t) buffer_len);
+    fread(buffer, (size_t) buffer_len, sizeof(int), file);
+
+    for (int i = 0; i < buffer_len / sizeof(int); ++i) {
+        if (0 == i) {
+            *lst = list_create(buffer[i]);
+            continue;
+        }
+        push_back(*lst, buffer[i]);
     }
 
     fclose(file);

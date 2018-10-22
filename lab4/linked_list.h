@@ -98,9 +98,23 @@ bool save(Node const *lst, char const *filename);
 
 /**
  *  Reads elements from the [filename] and adds them to the [lst]
- *  Requirements: [lst] and [filename] must be not NULL, also the [lst] must have only 1 node
+ *  Requirements: [lst] and [filename] must be not NULL, but [*lst] must be NULL to avoid memory leak
  *  @return true if loading is successful, otherwise - false
  **/
-bool load(Node *lst, char const *filename);
+bool load(Node **lst, char const *filename);
+
+/**
+ *  Writes all elements of the [lst] into a binary file [filename]
+ *  Requirements: [lst] and [filename] must be not NULL
+ *  @return true if writing is successful, otherwise - false
+ **/
+bool serialize(Node const *lst, char const *filename);
+
+/**
+ *  Reads elements from the [filename] and adds them to the [lst]
+ *  Requirements: [lst] and [filename] must be not NULL, but [*lst] must be NULL to avoid memory leak
+ *  @return true if loading is successful, otherwise - false
+ **/
+bool deserialize(Node **lst, char const *filename);
 
 #endif //LAB4_LINKED_LIST_H

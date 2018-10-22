@@ -14,7 +14,7 @@ void high_order_test();
 Node *cli_fill_list();
 
 int main() {
-    // list_test();
+    list_test();
 
     high_order_test();
 
@@ -128,13 +128,13 @@ void high_order_test() {
     printf("\n=== Print first 10 values of the sequence degrees of 2 ===\n");
     list_print(seq_list, " ");
 
-    printf("\n=== Saving the seq_list to the file ===\n");
+    printf("\n=== Saving the seq_list to the text file ===\n");
     if (save(seq_list, "linked_list")) {
         printf("\t Saving is successful \n");
-        printf("\n=== Loading the seq_list from the file ===\n");
-        Node *read_list = list_create(0xDEADF00D);
+        printf("\n=== Loading the seq_list from the text file ===\n");
+        Node *read_list = NULL;
 
-        if (load(read_list, "linked_list")) {
+        if (load(&read_list, "linked_list")) {
             printf("\t Loading is successful \n");
             printf("\t Comparing source and received list.. \n");
             if (compare_lists(seq_list, read_list)) {
@@ -147,6 +147,24 @@ void high_order_test() {
         list_free(read_list);
     }
 
+    printf("\n=== Saving the seq_list to the binary file ===\n");
+    if (serialize(seq_list, "linked_list_binary")) {
+        printf("\t Saving is successful \n");
+        printf("\n=== Loading the seq_list from the binary file ===\n");
+        Node *read_list = NULL;
+
+        if (deserialize(&read_list, "linked_list_binary")) {
+            printf("\t Loading is successful \n");
+            printf("\t Comparing source and received list.. \n");
+            if (compare_lists(seq_list, read_list)) {
+                printf("\t\t Lists are equals\n");
+            } else {
+                printf("\t\t Lists are different, test failed :(\n");
+            }
+        }
+
+        list_free(read_list);
+    }
 
     list_free(seq_list);
     list_free(list);
