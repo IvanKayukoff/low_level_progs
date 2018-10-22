@@ -24,7 +24,7 @@ int main() {
 Node *cli_fill_list() {
     printf("Enter integers to the new list, then press 'Enter': \n");
 
-    char str[256];
+    char *str = calloc(256, sizeof(char));
     int x = 0;
     Node *list = NULL;
 
@@ -56,6 +56,7 @@ Node *cli_fill_list() {
 
     assert(list != NULL);
 
+    free(str);
     return list;
 }
 
@@ -123,6 +124,21 @@ void high_order_test() {
     map_mut(list, &abs);
     list_print(list, " ");
 
+    list_free(list);
+    list_free(sqr_list);
+    list_free(cube_list);
+}
+
+void list_test() {
+    Node *list = cli_fill_list();
+
+    printf("List items:\n\t");
+    list_print(list, " ");
+    printf("Length of the list: %lu\n", list_length(list));
+    printf("Sum of elements: %d\n", list_sum(list));
+
+    list_free(list);
+
     Node *seq_list = list_create(1);
     iterate(seq_list, &double_it, 10);
     printf("\n=== Print first 10 values of the sequence degrees of 2 ===\n");
@@ -142,9 +158,13 @@ void high_order_test() {
             } else {
                 printf("\t\t Lists are different, test failed :(\n");
             }
+        } else {
+            printf("\t Loading failed :( \n");
         }
 
         list_free(read_list);
+    } else {
+        printf("\t Saving failed :( \n");
     }
 
     printf("\n=== Saving the seq_list to the binary file ===\n");
@@ -161,24 +181,14 @@ void high_order_test() {
             } else {
                 printf("\t\t Lists are different, test failed :(\n");
             }
+        } else {
+            printf("\t Loading failed :( \n");
         }
 
         list_free(read_list);
+    } else {
+        printf("\t Saving failed :( \n");
     }
 
     list_free(seq_list);
-    list_free(list);
-    list_free(sqr_list);
-    list_free(cube_list);
-}
-
-void list_test() {
-    Node *list = cli_fill_list();
-
-    printf("List items:\n\t");
-    list_print(list, " ");
-    printf("Length of the list: %lu\n", list_length(list));
-    printf("Sum of elements: %d\n", list_sum(list));
-
-    list_free(list);
 }
