@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <limits.h>
+#include <time.h>
 #include "linked_list.h"
 #include "higher_order.h"
 
@@ -13,10 +14,62 @@ void high_order_test();
 
 Node *cli_fill_list();
 
-int main() {
-    list_test();
+#define ELEM_COUNTER 10
 
-    high_order_test();
+void speed_comparing_test() {
+    int *array = calloc(ELEM_COUNTER, sizeof(int));
+    assert(array != NULL);
+
+    for (int i = 0; i < ELEM_COUNTER; ++i) {
+        array[i] = i;
+    }
+
+    Node *list = NULL;
+    for (int i = 0; i < ELEM_COUNTER; ++i) {
+        if (0 == i) {
+            list = list_create(i);
+            continue;
+        }
+        push_back(list, i);
+    }
+
+
+    printf("N ==== Array Time  ==== List Time   ======== V1 / V2\n");
+    for (size_t j = 0; j < ELEM_COUNTER; ++j) {
+        if (j > 10 && j % 10 != 0) continue;
+
+        clock_t arr_begin = clock();
+
+        volatile int arr_elem = 0xDEADF00D;
+        for (int k = 0; k < 100000; ++k) {
+            arr_elem = array[j];
+        }
+
+        clock_t arr_end = clock();
+        double arr_time = (double) (arr_end - arr_begin) / CLOCKS_PER_SEC;
+
+        clock_t lst_begin = clock();
+
+        volatile int lst_elem = 0xDEADF00D;
+        for (int k = 0; k < 100000; ++k) {
+            lst_elem = list_get(list, j);
+        }
+
+        clock_t lst_end = clock();
+        double lst_time = (double) (lst_end - lst_begin) / CLOCKS_PER_SEC;
+
+        printf("%lu ---- %lf ms ---- %lf ms -------- %d  /  %d\n", j, arr_time, lst_time, arr_elem, lst_elem);
+    }
+
+
+}
+
+int main() {
+    // list_test();
+
+    // high_order_test();
+
+    speed_comparing_test();
 
     return 0;
 }
