@@ -5,6 +5,7 @@
 !*.c
 !*.h
 !*.tex
+!*.pdf
 
 !lab3/
 !lab3/main.c
@@ -19,4 +20,6 @@
 !lab4/linked_list.c
 !lab4/linked_list.h
 !lab4/CMakeLists.txt
+!lab4/docs/
+!lab4/docs/out/
 
