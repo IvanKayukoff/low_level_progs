@@ -6,6 +6,9 @@
 !*.h
 !*.tex
 !*.pdf
+!Makefile
+
+!HelloWorldLKM
 
 !lab3/
 !lab3/main.c
