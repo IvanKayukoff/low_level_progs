@@ -6,6 +6,10 @@
 !*.h
 !*.tex
 !*.pdf
+!Makefile
+!LICENSE
+
+!HelloWorldLKM
 
 !lab3/
 !lab3/main.c
