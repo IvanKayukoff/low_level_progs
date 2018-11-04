@@ -28,10 +28,18 @@ typedef struct __attribute__((packed)) {
 } bmp_pixel;
 
 typedef struct {
-    uint64_t width, height;
+    uint32_t width, height;
     bmp_pixel *data;
 } bmp_image;
 
 bmp_header *read_header(char const *filename);
+
+bmp_pixel *read_pixels(char const *filename);
+
+bmp_image *rotate_right(bmp_image const *img);
+
+bmp_image *read_bmp_image(char const *filename);
+
+void write_bmp_image(bmp_image const *img, bmp_header *header, char const *filename);
 
 #endif //LAB5_BMP_WRAPPER_H

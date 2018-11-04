@@ -4,7 +4,14 @@
 
 int main() {
     bmp_header *header = read_header("resources/meme.bmp");
+    bmp_image *img = read_bmp_image("resources/meme.bmp");
+    bmp_image *rotated = rotate_right(img);
+    write_bmp_image(rotated, header, "resources/rotated.bmp");
 
     free(header);
+    free(img->data);
+    free(img);
+    free(rotated->data);
+    free(rotated);
     return 0;
 }
