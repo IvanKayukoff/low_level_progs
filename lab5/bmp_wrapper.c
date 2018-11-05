@@ -85,14 +85,11 @@ bmp_pixel *read_pixels(char const *filename) {
     fread(dirty_data, 1, header->bmp_bytesz, f);
     bmp_pixel *clean_data = remove_alignment(dirty_data, header);
 
-    bmp_pixel *mirrored_data = mirror_x(clean_data, header->width, header->height);
-
     fclose(f);
     free(header);
     free(dirty_data);
-    free(clean_data);
 
-    return mirrored_data;
+    return clean_data;
 }
 
 bmp_image *rotate_right(bmp_image const *img) {
@@ -112,6 +109,10 @@ bmp_image *rotate_right(bmp_image const *img) {
         }
     }
 
+    bmp_pixel *mirrored = mirror_x(rotated->data, rotated->width, rotated->height);
+
+    free(rotated->data);
+    rotated->data = mirrored;
     return rotated;
 }
 
