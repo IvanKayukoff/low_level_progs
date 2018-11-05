@@ -5,7 +5,7 @@
 #include <memory.h>
 #include "bmp_wrapper.h"
 
-bmp_header * read_header(char const *filename) {
+bmp_header *read_header(char const *filename) {
     assert(filename != NULL);
 
     bmp_header *header = calloc(1, sizeof(bmp_header));
@@ -54,6 +54,21 @@ bmp_pixel *add_alignment(bmp_pixel const *clean_data, bmp_header const *header) 
     return dirty_data;
 }
 
+bmp_pixel *mirror_x(bmp_pixel const *src, uint32_t width, uint32_t height) {
+    assert(src != NULL);
+
+    bmp_pixel *mirrored = calloc(width * height, sizeof(bmp_pixel));
+    assert(mirrored != NULL);
+
+    for (int i = 0, k = height - 1; i < height; ++i, --k) {
+        for (int j = 0; j < width; ++j) {
+            memcpy(mirrored + i*width + j, src + k*width + j, sizeof(bmp_pixel));
+        }
+    }
+
+    return mirrored;
+}
+
 bmp_pixel *read_pixels(char const *filename) {
     assert(filename != NULL);
 
@@ -70,11 +85,14 @@ bmp_pixel *read_pixels(char const *filename) {
     fread(dirty_data, 1, header->bmp_bytesz, f);
     bmp_pixel *clean_data = remove_alignment(dirty_data, header);
 
+    bmp_pixel *mirrored_data = mirror_x(clean_data, header->width, header->height);
+
     fclose(f);
     free(header);
     free(dirty_data);
+    free(clean_data);
 
-    return clean_data;
+    return mirrored_data;
 }
 
 bmp_image *rotate_right(bmp_image const *img) {
