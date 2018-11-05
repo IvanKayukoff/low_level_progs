@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-/** Structure which provides a BITMAPV4HEADER format */
+/** Structure which provides a BITMAPV5HEADER format */
 typedef struct __attribute__((packed)) {
     uint16_t bf_type;       // The header field used to identify the BMP
     uint32_t filesz;        // The size of the BMP file in bytes
@@ -26,7 +26,7 @@ typedef struct __attribute__((packed)) {
     uint32_t nimpcolors;    // The number of important colors used, or 0 when every color is important,
                             //      generally ignored
 
-    uint8_t v4fields[68];   // The additional header fields for BITMAPV4HEADER support
+    uint8_t v5fields[84];   // The additional header fields for BITMAPV5HEADER support
 } bmp_header;
 
 /**

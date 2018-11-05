@@ -20,36 +20,48 @@ bmp_header *read_header(char const *filename) {
     return header;
 }
 
-bmp_pixel *remove_alignment(bmp_pixel const *dirty_data, bmp_header const *header) {
+bmp_pixel *remove_alignment(void const *dirty_data, bmp_header const *header) {
     assert(dirty_data != NULL);
     assert(header != NULL);
 
     bmp_pixel *clean_data = calloc(header->width * header->height, sizeof(bmp_pixel));
     assert(clean_data != NULL);
 
-    int padding = 4 - header->width % 4;
+    int padding = 4 - (sizeof(bmp_pixel) * header->width) % 4;
     if (4 == padding) padding = 0;
-    for (int i = 0, j = 0, k = 0; k < header->height; i += header->width + padding, j += header->width, ++k) {
-        memcpy(clean_data + j, dirty_data + i, sizeof(bmp_pixel) * header->width);
+
+    // i - count of pixels in the clean_data
+    // j - count of bytes  in the dirty_data
+    uint32_t count_byte = 0;
+    for (int i = 0; i < header->height * header->width; i += header->width) {
+        memcpy(clean_data + i, dirty_data + count_byte, header->width * sizeof(bmp_pixel));
+        count_byte += header->width * sizeof(bmp_pixel) + padding;
     }
 
     return clean_data;
 }
 
-// FIXME alignment to 4 bytes, not pixels!
-bmp_pixel *add_alignment(bmp_pixel const *clean_data, bmp_header const *header) {
+void *add_alignment(bmp_pixel const *clean_data, bmp_header *header) {
     assert(clean_data != NULL);
     assert(header != NULL);
 
-    int padding = 4 - header->width % 4;
+    int padding = 4 - (sizeof(bmp_pixel) * header->width) % 4;
     if (4 == padding) padding = 0;
-    bmp_pixel *dirty_data = calloc((header->width + padding) * header->width, sizeof(bmp_pixel));
+
+    void *dirty_data = calloc((header->width + padding) * header->width, sizeof(bmp_pixel));
     assert(dirty_data != NULL);
 
-    for (int i = 0, j = 0, k = 0; k < header->height; i += header->width + padding, j += header->width, ++k) {
-        memcpy(dirty_data + i, clean_data + j, sizeof(bmp_pixel) * header->width);
-        memset(dirty_data, 0, padding * sizeof(bmp_pixel));
+    // i - count of pixels in the clean_data
+    // j - count of bytes  in the dirty_data
+    uint32_t count_byte = 0;
+    for (int i = 0; i < header->height * header->width; i += header->width) {
+        memcpy(dirty_data + count_byte, clean_data + i, header->width * sizeof(bmp_pixel));
+        count_byte += header->width * sizeof(bmp_pixel) + padding;
     }
+
+    header->bmp_bytesz = count_byte;
+    header->header_sz = sizeof(bmp_header) - 14; // 14 is size of file header fields
+    header->filesz = header->bmp_bytesz + header->header_sz;
 
     return dirty_data;
 }
@@ -62,7 +74,7 @@ bmp_pixel *mirror_x(bmp_pixel const *src, uint32_t width, uint32_t height) {
 
     for (int i = 0, k = height - 1; i < height; ++i, --k) {
         for (int j = 0; j < width; ++j) {
-            memcpy(mirrored + i*width + j, src + k*width + j, sizeof(bmp_pixel));
+            memcpy(mirrored + i * width + j, src + k * width + j, sizeof(bmp_pixel));
         }
     }
 
@@ -75,7 +87,7 @@ bmp_pixel *read_pixels(char const *filename) {
     bmp_header *header = read_header(filename);
     assert(header != NULL);
 
-    bmp_pixel *dirty_data = calloc(1, header->bmp_bytesz);
+    void *dirty_data = calloc(1, header->bmp_bytesz);
     assert(dirty_data != NULL);
 
     FILE *f = fopen(filename, "rb");
@@ -136,16 +148,13 @@ void write_bmp_image(bmp_image const *img, bmp_header *header, char const *filen
     assert(header != NULL);
     assert(filename != NULL);
 
-    bmp_pixel *aligned_pixels = add_alignment(img->data, header);
+    void *aligned_pixels = add_alignment(img->data, header);
     header->width = img->width;
     header->height = img->height;
 
     FILE *f = fopen(filename, "wb");
     fwrite(header, sizeof(bmp_header), 1, f);
-
-    int padding = 4 - header->width % 4;
-    if (4 == padding) padding = 0;
-    fwrite(aligned_pixels, sizeof(bmp_pixel), (img->width + padding) * img->height, f);
+    fwrite(aligned_pixels, header->bmp_bytesz, 1, f);
     fclose(f);
     free(aligned_pixels);
 }
