@@ -5,7 +5,7 @@
 #include <memory.h>
 #include "bmp_wrapper.h"
 
-bmp_header *read_header(char const *filename) {
+bmp_header * read_header(char const *filename) {
     assert(filename != NULL);
 
     bmp_header *header = calloc(1, sizeof(bmp_header));
@@ -36,6 +36,7 @@ bmp_pixel *remove_alignment(bmp_pixel const *dirty_data, bmp_header const *heade
     return clean_data;
 }
 
+// FIXME alignment to 4 bytes, not pixels!
 bmp_pixel *add_alignment(bmp_pixel const *clean_data, bmp_header const *header) {
     assert(clean_data != NULL);
     assert(header != NULL);
@@ -121,8 +122,11 @@ void write_bmp_image(bmp_image const *img, bmp_header *header, char const *filen
     header->height = img->height;
 
     FILE *f = fopen(filename, "wb");
-    fwrite(header, sizeof(header), 1, f);
-    fwrite(aligned_pixels, sizeof(bmp_pixel), img->width * img->height, f);
+    fwrite(header, sizeof(bmp_header), 1, f);
+
+    int padding = 4 - header->width % 4;
+    if (4 == padding) padding = 0;
+    fwrite(aligned_pixels, sizeof(bmp_pixel), (img->width + padding) * img->height, f);
     fclose(f);
     free(aligned_pixels);
 }

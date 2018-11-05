@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 typedef struct __attribute__((packed)) {
-    unsigned char bf_type[2];
+    uint16_t bf_type;
     uint32_t filesz;
     uint16_t creator1;
     uint16_t creator2;
@@ -21,9 +21,11 @@ typedef struct __attribute__((packed)) {
     uint32_t vres;
     uint32_t ncolors;
     uint32_t nimpcolors;
+
+    uint8_t v4fields[68];
 } bmp_header;
 
-typedef struct __attribute__((packed)) {
+typedef struct {
     uint8_t b, g, r;
 } bmp_pixel;
 

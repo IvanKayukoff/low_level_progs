@@ -3,6 +3,7 @@
 #include "bmp_wrapper.h"
 
 int main() {
+    printf("%ld", sizeof(bmp_header));
     bmp_header *header = read_header("resources/meme.bmp");
     bmp_image *img = read_bmp_image("resources/meme.bmp");
     bmp_image *rotated = rotate_right(img);
