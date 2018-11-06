@@ -45,32 +45,50 @@ typedef struct {
     bmp_pixel *data;
 } bmp_image;
 
-/** Reads a header from file with [filename] */
-bmp_header *read_header(char const *filename);
+typedef enum {
+    READ_OK = 0,
+    READ_INVALID_SIGNATURE,
+    READ_INVALID_BITS,
+    READ_INVALID_BMP_FORMAT,
+    READ_ERROR
+} bmp_read_status;
 
-/**
+typedef enum {
+    WRITE_OK = 0,
+    WRITE_ERROR
+} bmp_write_status;
+
+/** Reads a header from file with [filename] FIXME */
+bmp_read_status read_header(char const *filename, bmp_header **dest);
+
+/** FIXME
  *  Reads all pixels from file with [filename]
  *  @return bmp_pixel array, which size you should get from the header instance
  **/
-bmp_pixel *read_pixels(char const *filename);
+bmp_read_status read_pixels(char const *filename, bmp_pixel **dest);
 
 /**
  *  Turns the [img] right, creates new bmp_image instance for containing a result
  **/
 bmp_image *rotate_right(bmp_image const *img);
 
-/**
+/** FIXME
  *  Reads an image from [filename]
  *  @return bmp_image instance, from which we should free allocated memory after using:
  *          free(img->data); free(img);
  **/
-bmp_image *read_bmp_image(char const *filename);
+bmp_read_status read_bmp_image(char const *filename, bmp_image **dest);
 
-/**
+/** FIXME
  *  Writes an image to [filename] with specified [header]
  *  @param header is a bmp_header which will be modified inside:
  *         header->width and header->height set according to img->width and img->height
  **/
-void write_bmp_image(bmp_image const *img, bmp_header *header, char const *filename);
+bmp_write_status write_bmp_image(bmp_image const *img, bmp_header *header, char const *filename);
+
+/**
+ *  Creates new x-axis mirrored array of pixels
+ **/
+bmp_pixel *mirror_x(bmp_pixel const *src, uint32_t width, uint32_t height);
 
 #endif //LAB5_BMP_WRAPPER_H
