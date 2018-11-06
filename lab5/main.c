@@ -21,7 +21,7 @@ int print_write_status(bmp_write_status status) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc <= 1) {
+    if (argc <= 2) {
         fprintf(stderr, "This program requires the path to the bmp file as the first cli parameter\n");
         return 1;
     }
