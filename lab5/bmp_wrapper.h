@@ -46,24 +46,42 @@ typedef struct {
 } bmp_image;
 
 typedef enum {
+    /** Set if there is no errors while reading */
     READ_OK = 0,
+
+    /** Set if 2 first bytes of the BMP not equals 'BM' */
     READ_INVALID_SIGNATURE,
+
+    /** Set if the number of bits per pixel of the BMP not equals 24 */
     READ_INVALID_BITS,
+
+    /** Set if the BMP image format not equals BITMAPV5 */
     READ_INVALID_BMP_FORMAT,
+
+    /** Set if any other error occurs */
     READ_ERROR
 } bmp_read_status;
 
 typedef enum {
+    /** Set if there is no errors while writing */
     WRITE_OK = 0,
+
+    /** Set if the error occurs while writing */
     WRITE_ERROR
 } bmp_write_status;
 
-/** Reads a header from file with [filename] FIXME */
+/**
+ *  Reads a header from the file with [filename] to the destination - [dest]
+ *  @param dest is a reading destination, to avoid memory leaks [*dest] must be NULL
+ *  @return Status of the reading
+ **/
 bmp_read_status read_header(char const *filename, bmp_header **dest);
 
-/** FIXME
- *  Reads all pixels from file with [filename]
- *  @return bmp_pixel array, which size you should get from the header instance
+/**
+ *  Reads all pixels from the file with [filename] to the destination - [dest]
+ *  @param dest is a pixel array, which size you should get from the header instance.
+ *         To avoid memory leaks [*dest] must be NULL
+ *  @return Status of the reading
  **/
 bmp_read_status read_pixels(char const *filename, bmp_pixel **dest);
 
@@ -72,17 +90,20 @@ bmp_read_status read_pixels(char const *filename, bmp_pixel **dest);
  **/
 bmp_image *rotate_right(bmp_image const *img);
 
-/** FIXME
- *  Reads an image from [filename]
- *  @return bmp_image instance, from which we should free allocated memory after using:
- *          free(img->data); free(img);
+/**
+ *  Reads an image from the file with [filename] to the destination - [dest]
+ *  @param dest is a bmp_image instance, from which we should free allocated memory after using:
+ *         free(img->data); free(img);
+ *  @return Status of the reading
  **/
 bmp_read_status read_bmp_image(char const *filename, bmp_image **dest);
 
-/** FIXME
- *  Writes an image to [filename] with specified [header]
+/**
+ *  Writes the image [img] to the file with [filename] with specified [header]
  *  @param header is a bmp_header which will be modified inside:
  *         header->width and header->height set according to img->width and img->height
+ *  @param img is the image which will be written to the file
+ *  @return Status of the writing
  **/
 bmp_write_status write_bmp_image(bmp_image const *img, bmp_header *header, char const *filename);
 
