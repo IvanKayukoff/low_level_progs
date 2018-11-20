@@ -1,0 +1,36 @@
+\documentclass[listings]{labreport}
+\departmentsubject{Кафедра вычислительной техники}{Языки системного программирования}
+\titleparts{Лабораторная работа №6}{Custom memory allocator}
+\students{Каюков Иван Алексеевич}
+
+\begin{document}
+
+\maketitlepage
+
+\section*{Задание}
+
+Реализовать \textit{malloc} и \textit{free} с помощью системного вызова 
+\textit{mmap} и связанного списка блоков произвольного размера.
+Использовать \textit{malloc/calloc, realloc} и \textit{free} не разрешается.
+
+\section*{Архитектура}
+
+\begin{enumerate}
+  \item Каждый блок содержит заголовок и данные, которые идут сразу после
+    заголовка
+  \item Заголовок состоит из указателя на следующий блок, размера данных и 
+    флага, показывающего свободен ли этот блок
+  \item Размер данных должен быть кратен \textit{CHUNK\_ALIGN}, т.е. 8-ми байтам
+\end{enumerate}
+
+\section*{Исходный код}
+
+Исходный код доступен по адресу 
+\texttt{https://github.com/IvanKayukoff/low\_level\_progs}
+
+\section*{Вывод}
+
+В данной лабораторной работе мы научились пользоваться \textit{mmap} и 
+познакомились с реализацией \textit{malloc} и \textit{free} на языке \textit{Си}.
+
+\end{document}
