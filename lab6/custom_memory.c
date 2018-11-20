@@ -3,7 +3,7 @@
 #include <assert.h>
 #include "custom_memory.h"
 
-uint8_t *heap_head = NULL;
+static uint8_t *heap_head = NULL;
 
 static void *heap_init() {
     assert(heap_head == NULL);
@@ -24,7 +24,7 @@ static void coalesce_free_chunks(memory_t *p) {
     assert((p->capacity & 1) == 0);
 
     while (p->next != NULL && (p->next->capacity & 1) == 0) {
-        if (p->next != p + sizeof(memory_t) + p->capacity) return;
+        if (p->next != (memory_t *) ((uint8_t *) p + sizeof(memory_t) + p->capacity)) return;
 
         p->capacity += p->next->capacity + sizeof(memory_t);
         p->next = p->next->next;
@@ -69,6 +69,7 @@ static void split_chunk(memory_t *chunk, size_t size) {
         second_chunk->capacity = remainder - sizeof(memory_t);
         second_chunk->next = chunk->next;
         chunk->next = second_chunk;
+        chunk->capacity -= remainder;
     }
 }
 
@@ -90,5 +91,14 @@ void *custom_malloc(size_t query_sz) {
     }
 
     split_chunk(chunk, query_sz);
+    chunk->capacity = chunk->capacity | 1;
     return (void *) (chunk + 1);
+}
+
+void custom_free(void *p) {
+    memory_t *chunk = (memory_t *) ((uint8_t *) p - sizeof(memory_t));
+    assert((chunk->capacity & 1) == 1 && "The memory is already freed");
+
+    chunk->capacity = chunk->capacity & -2;
+    coalesce_free_chunks(chunk);
 }
